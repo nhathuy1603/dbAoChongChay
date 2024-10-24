@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: duan3@mysql
+      MYSQL_DATABASE: duan3  # Tạo database tự động khi container khởi động
+    ports:
+      - "3316:3306"  # Ánh xạ cổng 3306 trên host tới cổng 3306 trong container
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  server-api:
+    build: .
+    container_name: server-api-container
+    environment:
+      MYSQL_HOST: mysql  # Sử dụng tên dịch vụ để kết nối
+      MYSQL_PORT: 3306  # Cổng mặc định của MySQL
+      MYSQL_DATABASE: duan3
+      MYSQL_USER: root
+      MYSQL_PASSWORD: duan3@mysql
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
